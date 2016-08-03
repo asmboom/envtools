@@ -27,10 +27,7 @@ OIIO_NAMESPACE_USING
 #include "SummedAreaTableRegion"
 
 #include "extractLightsMerge.cpp"
-
-#if !defined(NDEBUG)
 #include "extractLightsVarianceDebug.cpp"
-#endif
 
 /**
  * Recursively split a region r and append new subregions
@@ -173,6 +170,8 @@ int main(int argc, char** argv)
     int numCuts = 8;// number of division squared of the envmap of same lighting power
 
     int c;
+    bool debug = false;
+    
     while ((c = getopt(argc, argv, "a:r:n")) != -1)
     {
         switch (c)
@@ -180,6 +179,7 @@ int main(int argc, char** argv)
         case 'a': ratioAreaSizeMax = atof(optarg); break;
         case 'r': ratioLuminanceLight = atof(optarg); break;
         case 'n': numCuts = atoi(optarg); break;
+        case 'd': debug = true; break;
 
         default: return usage(argv[0]);
         }
@@ -309,11 +309,12 @@ int main(int argc, char** argv)
         outputJSON(mainLights, height, width, imageAreaSize, luminanceSum);
 
 
-#if !defined(NDEBUG)
 
-        debugDrawLight(regions, lights, mainLights, rgba, width, height, nc);
+        if (debug){            
+            debugDrawLight(regions, lights, mainLights, rgba, width, height, nc);
+        }
+        
 
-#endif // !defined(NDEBUG)
 
     }
     else{
